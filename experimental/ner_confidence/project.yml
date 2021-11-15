@@ -1,0 +1,42 @@
+title: "Bootstrapped NER confidence"
+description: "Bootstrap NER confidence scores with silver annotation + spancat."
+spacy_version: ">=3.2.0,<4.0.0"
+
+vars:
+  config: "config.cfg"
+  gpu: 0
+  lang: "en"
+  silver_model: "en_core_web_trf"
+  base_model: "en_core_web_md"
+  max_texts: 1000
+
+directories: ["training", "configs", "metrics", "corpus"]
+
+workflows:
+  all:
+    - create-corpus
+    - train
+
+commands:
+  - name: download-models
+    help: "Download models"
+    script:
+      - "python -m spacy download ${vars.silver_model}"
+      - "python -m spacy download ${vars.base_model}"
+
+  - name: create-corpus
+    help: "Create corpus"
+    script:
+      - "python scripts/create_corpus.py ${vars.lang} unshuffled_deduplicated_${vars.lang} ${vars.max_texts} ${vars.silver_model} corpus/"
+
+  - name: train
+    help: "Train the pipeline"
+    script:
+      - "python -m spacy train configs/${vars.config} -o training/ --gpu-id ${vars.gpu} --paths.train corpus/train.spacy --paths.dev corpus/dev.spacy --paths.base_model ${vars.base_model} --code scripts/code.py"
+    deps:
+      - "corpus/train.spacy"
+      - "corpus/dev.spacy"
+      - "configs/${vars.config}"
+      - "scripts/code.py"
+    outputs:
+      - "training/model-best"
