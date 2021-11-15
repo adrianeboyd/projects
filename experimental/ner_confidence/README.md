@@ -18,7 +18,7 @@ Commands are only re-run if their inputs have changed.
 
 | Command | Description |
 | --- | --- |
-| `download-model` | Download base model |
+| `download-models` | Download models |
 | `create-corpus` | Create corpus |
 | `train` | Train the pipeline |
 
@@ -31,6 +31,6 @@ inputs have changed.
 
 | Workflow | Steps |
 | --- | --- |
-| `all` | `download-model` &rarr; `create-corpus` &rarr; `train` |
+| `all` | `create-corpus` &rarr; `train` |
 
 <!-- SPACY PROJECT: AUTO-GENERATED DOCS END (do not remove) -->
