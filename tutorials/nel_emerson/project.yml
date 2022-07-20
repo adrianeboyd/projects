@@ -36,7 +36,6 @@ assets:
 # haven't changed, it won't be re-run.
 workflows:
   all:
-    - setup
     - download
     - kb
     - corpus
