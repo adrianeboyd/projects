@@ -124,9 +124,8 @@ workflows:
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
   - name: "install"
-    help: "Install dependencies"
-    script: 
-      - "pip3 install --user -r requirements.txt"
+    help: "Install models"
+    script:
       - "python -m spacy download en_core_web_lg"
   - name: "preprocess"
     help: "Convert raw inputs into spaCy's binary format"

@@ -28,12 +28,10 @@ workflows:
 # shown when executing "spacy project run [optional command] [path] --help".
 commands:
   - name: "install"
-    help: "Install dependencies and download models"
+    help: "Download models"
     script:
-      - "pip install -r requirements.txt"
       - "./scripts/download_models.sh"
     deps:
-      - "requirements.txt"
       - "scripts/download_models.sh"
   - name: "serve"
     help: "Serve the models via a FastAPI REST API using the given host and port"

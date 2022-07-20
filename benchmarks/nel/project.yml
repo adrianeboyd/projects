@@ -22,7 +22,6 @@ assets:
 
 workflows:
   all:
-    - setup
     - preprocess
     - download_model
     - create_kb
@@ -36,13 +35,6 @@ workflows:
     - evaluate
 
 commands:
-  - name: setup
-    help: Install dependencies
-    script:
-      - "python -m pip install -r requirements.txt"
-    deps:
-      - "requirements.txt"
-
   - name: preprocess
     help: Preprocess test datasets
     script:
