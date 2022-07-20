@@ -13,7 +13,7 @@ vars:
 directories: ["scripts"]
 
 commands:
-  - name: "install"
+  - name: "download"
     help: "Download models"
     script:
       - "python -m spacy download en_core_web_sm"
