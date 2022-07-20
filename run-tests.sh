@@ -18,11 +18,11 @@ do
     if [[ ! " ${tested_dirs[*]} " =~ " ${full_second_level_dir} " ]]; then
       tested_dirs+=($full_second_level_dir)
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        python -m pip install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+        python -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
       fi
       python -m pytest -s $full_second_level_dir
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        python -m pip uninstall -r $full_second_level_dir/requirements.txt
+        python -m pip -q uninstall -r $full_second_level_dir/requirements.txt
       fi
     fi
   fi
