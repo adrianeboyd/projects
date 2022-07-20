@@ -2,7 +2,3 @@
 skweak==0.2.13
 hmmlearn==0.2.6
 nlpaug
-# Auxiliary libraries
-typer
-wasabi
-tqdm
