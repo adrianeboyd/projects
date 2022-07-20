@@ -20,7 +20,7 @@ do
       if [ -e $full_second_level_dir/requirements.txt ]; then
         python -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
       fi
-      python -m pytest -s $full_second_level_dir
+      python -m pytest -q -s $full_second_level_dir
       if [ -e $full_second_level_dir/requirements.txt ]; then
         python -m pip -q uninstall -y -r $full_second_level_dir/requirements.txt
       fi
