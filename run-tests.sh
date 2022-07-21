@@ -31,7 +31,6 @@ if [[ $2 == "all" ]]; then
       dirs+=($second_level_dir)
     done
   done
-  exit 0
 fi
 
 for dir in "${dirs[@]}"
