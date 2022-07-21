@@ -61,9 +61,9 @@ do
       fi
 
       # Ensure proper spaCy version is installed.
-      spacy_version=$(grep -A3 "spacy_version:" ${full_second_level_dir}/project.yml | head -n1 | cut -c 17- | rev | cut -c 2- | rev)
+      spacy_version=$(cat ${full_second_level_dir}/project.yml | shyaml get-value spacy_version '')
       if [ ! -z "$spacy_version" ]; then
-          $1 -m pip -q install "spacy${spacy_version}" --no-warn-script-location
+        $1 -m pip -q install "spacy${spacy_version}" --no-warn-script-location
       fi
 
       $1 -m pytest -q -s $full_second_level_dir
@@ -74,7 +74,7 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 > installed.txt
+        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 shyaml > installed.txt
         # pip uninstall sometimes yields permission-related errors. We ignore this for now.
         $1 -m pip -q uninstall -y -r installed.txt 2>/dev/null
         $1 -m pip -q install pytest spacy --no-warn-script-location
