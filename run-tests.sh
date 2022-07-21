@@ -5,8 +5,6 @@ if (( $# == 0 )); then
     >&2 echo "Python interpreter (e.g. 'python', 'python3.7') must be supplied."
 fi
 
-$1 -m pip install shyaml
-
 # Only run tests in second-level directories that have been changed in the last commit.
 status=0
 
@@ -63,7 +61,11 @@ do
       fi
 
       # Ensure proper spaCy version is installed.
-      spacy_version=$(cat ${full_second_level_dir}/project.yml | shyaml get-value spacy_version '')
+      spacy_version=$(
+        cat ${full_second_level_dir}/project.yml |
+        $1 -c "import yaml; import sys; print(yaml.safe_load(sys.stdin.read()).get('spacy_version', ''))"
+      )
+
       if [ ! -z "$spacy_version" ]; then
         $1 -m pip -q install "spacy${spacy_version}" --no-warn-script-location
       fi
