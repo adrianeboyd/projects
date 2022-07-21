@@ -34,7 +34,6 @@ jobs:
                 pip install "spacy>=3.3.0,<3.5.0"
                 pip install pytest
                 pip install wheel
-                pip install shyaml
             displayName: 'Install dependencies'
 
           - script: bash run-tests.sh python

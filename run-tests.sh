@@ -5,6 +5,8 @@ if (( $# == 0 )); then
     >&2 echo "Python interpreter (e.g. 'python', 'python3.7') must be supplied."
 fi
 
+$1 -m pip -q install shyaml
+
 # Only run tests in second-level directories that have been changed in the last commit.
 status=0
 
