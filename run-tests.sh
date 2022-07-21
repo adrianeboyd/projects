@@ -31,6 +31,7 @@ if [[ $2 == "all" ]]; then
     done
   done
 else
+  echo "Executing tests in changed directories"
   mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g')
 fi
 
@@ -62,7 +63,7 @@ do
       # Ensure proper spaCy version is installed.
       spacy_version=$(grep -A3 "spacy_version:" ${full_second_level_dir}/project.yml | head -n1 | cut -c 17- | rev | cut -c 2- | rev)
       if [ ! -z "$spacy_version" ]; then
-          $1 -m pip -q install "'spacy${spacy_version}'" --no-warn-script-location
+          $1 -m pip -q install "spacy${spacy_version}" --no-warn-script-location
       fi
 
       $1 -m pytest -q -s $full_second_level_dir
