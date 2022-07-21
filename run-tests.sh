@@ -12,7 +12,7 @@ status=0
 mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g')
 declare -a tested_dirs=()
 
-# For complete run independent from Git changes: bash run-tests.sh all
+# For complete run independent from Git changes: bash run-tests.sh $python_interpreter all
 if [[ $2 == "all" ]]; then
   echo "Executing all tests"
   declare -a project_collections=("benchmarks" "experimental" "integrations" "pipelines" "tutorials")
@@ -49,13 +49,13 @@ do
 
       tested_dirs+=($full_second_level_dir)
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+        $1 -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu --no-warn-script-location
       fi
 
       # Ensure proper spaCy version is installed.
       spacy_version=$(grep -A3 "spacy_version:" ${full_second_level_dir}/project.yml | head -n1 | cut -c 17- | rev | cut -c 2- | rev)
       if [ ! -z "$spacy_version" ]; then
-          $1 -m pip -q install spacy${spacy_version}
+          $1 -m pip -q install "'spacy${spacy_version}'" --no-warn-script-location
       fi
 
       $1 -m pytest -q -s $full_second_level_dir
@@ -67,8 +67,9 @@ do
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
         $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 > installed.txt
-        $1 -m pip -q uninstall -y -r installed.txt
-        $1 -m pip -q install pytest spacy
+        # pip uninstall sometimes yields permission-related errors. We ignore this for now.
+        $1 -m pip -q uninstall -y -r installed.txt 2>/dev/null
+        $1 -m pip -q install pytest spacy --no-warn-script-location
         rm installed.txt
       fi
     fi
