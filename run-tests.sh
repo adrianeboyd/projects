@@ -34,6 +34,12 @@ else
   mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g')
 fi
 
+echo "Detected changes in:"
+for dir in "${dirs[@]}"
+do
+  echo $dir
+done
+
 for dir in "${dirs[@]}"
 do
   # Get path with second level only. This will be empty if the change happened at the first level.
