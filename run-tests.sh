@@ -9,7 +9,6 @@ fi
 status=0
 
 # Fetch changed files.
-mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g')
 declare -a tested_dirs=()
 
 # For complete run independent from Git changes: bash run-tests.sh $python_interpreter all
@@ -31,6 +30,8 @@ if [[ $2 == "all" ]]; then
       dirs+=($second_level_dir)
     done
   done
+else
+  mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g')
 fi
 
 for dir in "${dirs[@]}"
