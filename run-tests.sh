@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Make sure Python interpreter is supplied.
+if (( $# == 0 )); then
+    >&2 echo "Python interpreter (e.g. 'python', 'python3.7') must be supplied."
+fi
+
 # Only run tests in second-level directories that have been changed in the last commit.
 status=0
 
@@ -8,7 +13,7 @@ mapfile -t dirs < <( git diff --dirstat=files,0 HEAD~1 | sed 's/^[ 0-9.]\+% //g'
 declare -a tested_dirs=()
 
 # For complete run independent from Git changes: bash run-tests.sh all
-if [[ $1 == "all" ]]; then
+if [[ $2 == "all" ]]; then
   echo "Executing all tests"
   declare -a project_collections=("benchmarks" "experimental" "integrations" "pipelines" "tutorials")
   declare -a dirs=()
@@ -38,16 +43,16 @@ do
 
       tested_dirs+=($full_second_level_dir)
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        python -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+        $1 -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
       fi
 
       # Ensure proper spaCy version is installed.
       spacy_version=$(grep -A3 "spacy_version:" ${full_second_level_dir}/project.yml | head -n1 | cut -c 17- | rev | cut -c 2- | rev)
       if [ ! -z "$spacy_version" ]; then
-          python -m pip -q install spacy${spacy_version}
+          $1 -m pip -q install spacy${spacy_version}
       fi
 
-      python -m pytest -q -s $full_second_level_dir
+      $1 -m pytest -q -s $full_second_level_dir
 
       # Mark as failure if exit code isn't either 0 (success) or 5 (no tests found).
       if [[ $? != @(0|5) ]]; then
@@ -55,9 +60,9 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        python -m pip freeze --exclude torch --exclude wheel cupy-cuda110 > installed.txt
-        python -m pip -q uninstall -y -r installed.txt
-        python -m pip -q install pytest spacy
+        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 > installed.txt
+        $1 -m pip -q uninstall -y -r installed.txt
+        $1 -m pip -q install pytest spacy
         rm installed.txt
       fi
     fi
