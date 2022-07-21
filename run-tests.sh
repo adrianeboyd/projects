@@ -19,12 +19,19 @@ if [[ $2 == "all" ]]; then
   declare -a dirs=()
   for dir in "${project_collections[@]}"
   do
-    mapfile -d $'\0' second_level_dirs < <(find ${dir} -mindepth 1 -maxdepth 1 -type d -print0)
+    # Make sure parsing `find` into array works on bash < 4.4 (which seems to be the case for our BuildKite AMIs).
+    # 4.4+ is easier, see https://stackoverflow.com/a/23357277.
+    second_level_dirs=()
+    while IFS=  read -r -d $'\0'; do
+        second_level_dirs+=("$REPLY")
+    done < <(find ${dir} -mindepth 1 -maxdepth 1 -type d -print0)
+
     for second_level_dir in "${second_level_dirs[@]}"
     do
       dirs+=($second_level_dir)
     done
   done
+  exit 0
 fi
 
 for dir in "${dirs[@]}"
