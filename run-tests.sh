@@ -4,6 +4,7 @@
 if (( $# == 0 )); then
     >&2 echo "Python interpreter (e.g. 'python', 'python3.7') must be supplied."
 fi
+python_interpreter=$1
 
 # Only run tests in second-level directories that have been changed in the last commit.
 status=0
@@ -57,19 +58,19 @@ do
 
       tested_dirs+=($full_second_level_dir)
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu --no-warn-script-location
+        $python_interpreter -m pip -q install -r $full_second_level_dir/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu --no-warn-script-location
       fi
 
       # Ensure proper spaCy version is installed.
       spacy_version=$(
-        $1 -c "import srsly; data = srsly.read_yaml('${full_second_level_dir}/project.yml'); print(data.get('spacy_version', ''))"
+        $python_interpreter -c "import srsly; data = srsly.read_yaml('${full_second_level_dir}/project.yml'); print(data.get('spacy_version', ''))"
       )
 
       if [ ! -z "$spacy_version" ]; then
-        $1 -m pip -q install "spacy${spacy_version}" --no-warn-script-location
+        $python_interpreter -m pip -q install "spacy${spacy_version}" --no-warn-script-location
       fi
 
-      $1 -m pytest -q -s $full_second_level_dir
+      $python_interpreter -m pytest -q -s $full_second_level_dir
 
       # Mark as failure if exit code isn't either 0 (success) or 5 (no tests found).
       if [[ $? != @(0|5) ]]; then
@@ -77,10 +78,10 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda111 srsly aiohttp > installed.txt
+        $python_interpreter -m pip freeze --exclude torch --exclude wheel cupy-cuda111 srsly aiohttp > installed.txt
         # pip uninstall sometimes yields permission-related errors. We ignore this for now.
-        $1 -m pip -q uninstall -y -r installed.txt 2>/dev/null
-        $1 -m pip -q install pytest spacy --no-warn-script-location
+        $python_interpreter -m pip -q uninstall -y -r installed.txt 2>/dev/null
+        $python_interpreter -m pip -q install pytest spacy --no-warn-script-location
         rm installed.txt
       fi
     fi
