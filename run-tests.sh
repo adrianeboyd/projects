@@ -62,8 +62,7 @@ do
 
       # Ensure proper spaCy version is installed.
       spacy_version=$(
-        cat ${full_second_level_dir}/project.yml |
-        $1 -c "import yaml; import sys; print(yaml.safe_load(sys.stdin.read()).get('spacy_version', ''))"
+        $1 -c "import srsly; data = srsly.read_yaml('${full_second_level_dir}/project.yml'); print(data.get('spacy_version', ''))"
       )
 
       if [ ! -z "$spacy_version" ]; then
@@ -78,7 +77,7 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 shyaml > installed.txt
+        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 srsly aiohttp > installed.txt
         # pip uninstall sometimes yields permission-related errors. We ignore this for now.
         $1 -m pip -q uninstall -y -r installed.txt 2>/dev/null
         $1 -m pip -q install pytest spacy --no-warn-script-location
