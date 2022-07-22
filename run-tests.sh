@@ -66,7 +66,7 @@ do
         $python_interpreter -c "import srsly; data = srsly.read_yaml('${full_second_level_dir}/project.yml'); print(data.get('spacy_version', ''))"
       )
       if [ ! -z "$spacy_version" ]; then
-        $python_interpreter -m pip -I -q install "spacy${spacy_version}" --no-warn-script-location
+        $python_interpreter -m pip -q install "spacy${spacy_version}" --force-reinstall --no-warn-script-location
       fi
 
       $python_interpreter -m pytest -q -s $full_second_level_dir
