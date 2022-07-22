@@ -77,7 +77,7 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda110 srsly aiohttp > installed.txt
+        $1 -m pip freeze --exclude torch --exclude wheel cupy-cuda111 srsly aiohttp > installed.txt
         # pip uninstall sometimes yields permission-related errors. We ignore this for now.
         $1 -m pip -q uninstall -y -r installed.txt 2>/dev/null
         $1 -m pip -q install pytest spacy --no-warn-script-location
