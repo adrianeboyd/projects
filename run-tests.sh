@@ -78,8 +78,7 @@ do
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
         $python_interpreter -m pip freeze --exclude torch --exclude wheel cupy-cuda111 srsly aiohttp > installed.txt
-        # pip uninstall sometimes yields permission-related errors. We ignore this for now.
-        $python_interpreter -m pip -q uninstall -y -r installed.txt   # 2>/dev/null
+        $python_interpreter -m pip -q uninstall -y -r installed.txt
         $python_interpreter -m pip -q install pytest spacy aiohttp --no-warn-script-location
         rm installed.txt
       fi
