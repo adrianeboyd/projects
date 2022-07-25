@@ -77,7 +77,7 @@ do
       fi
 
       if [ -e $full_second_level_dir/requirements.txt ]; then
-        $python_interpreter -m pip freeze --exclude torch --exclude wheel cupy-cuda111 srsly aiohttp > installed.txt
+        $python_interpreter -m pip freeze --exclude torch --exclude cupy-cuda111 > installed.txt
         $python_interpreter -m pip -q uninstall -y -r installed.txt
         $python_interpreter -m pip -q install pytest spacy aiohttp --no-warn-script-location
         rm installed.txt
