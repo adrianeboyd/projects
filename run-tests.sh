@@ -3,6 +3,7 @@
 # Make sure Python interpreter is supplied.
 if (( $# == 0 )); then
     >&2 echo "Python interpreter (e.g. 'python', 'python3.7') must be supplied."
+    exit 1
 fi
 python_interpreter=$1
 
