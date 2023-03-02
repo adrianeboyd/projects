@@ -5,6 +5,7 @@ from pathlib import Path
 
 import spacy
 from spacy.kb import InMemoryLookupKB
+import custom_functions
 
 
 def main(entities_loc: Path, vectors_model: str, kb_loc: Path, nlp_dir: Path):
@@ -13,6 +14,7 @@ def main(entities_loc: Path, vectors_model: str, kb_loc: Path, nlp_dir: Path):
     # First: create a simpel model from a model with an NER component
     # To ensure we get the correct entities for this demo, add a simple entity_ruler as well.
     nlp = spacy.load(vectors_model, exclude="parser, tagger, lemmatizer")
+    nlp.add_pipe("tensor2attr")
     ruler = nlp.add_pipe("entity_ruler", after="ner")
     patterns = [{"label": "PERSON", "pattern": [{"LOWER": "emerson"}]}]
     ruler.add_patterns(patterns)
@@ -20,7 +22,7 @@ def main(entities_loc: Path, vectors_model: str, kb_loc: Path, nlp_dir: Path):
 
     name_dict, desc_dict = _load_entities(entities_loc)
 
-    kb = InMemoryLookupKB(vocab=nlp.vocab, entity_vector_length=300)
+    kb = InMemoryLookupKB(vocab=nlp.vocab, entity_vector_length=768)
 
     for qid, desc in desc_dict.items():
         desc_doc = nlp(desc)

@@ -4,6 +4,7 @@ from collections import Counter
 from pathlib import Path
 import spacy
 from spacy.tokens import DocBin, Span
+import custom_functions
 
 
 def main(json_loc: Path, nlp_dir: Path, train_corpus: Path, test_corpus: Path):
